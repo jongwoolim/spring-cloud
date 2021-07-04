@@ -1,0 +1,13 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discoveryservice
+
+eureka:
+  client:
+    #false 값을 지정하지 않으면 기본값 true로 인해 자기 자신의 정보를 등록하게 된다
+    register-with-eureka: false
+    fetch-registry: false
+
