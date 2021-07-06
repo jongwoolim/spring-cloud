@@ -34,4 +34,10 @@ spring:
           filters:
 #            - AddRequestHeader=second-request, second-request-header2
 #            - AddResponseHeader=second-response, second-response-header2
-            - CustomFilter
+#            추가적인 파라미터가 없으면 그대로 써주면 되지만 그렇지 않으면 name을 명시해줘야 한다
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: Hi, there.
+                preLogger: true
+                postLogger: true
