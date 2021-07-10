@@ -1,5 +1,6 @@
 package me.jongwoo.userservice.controller;
 
+import me.jongwoo.userservice.domain.Account;
 import me.jongwoo.userservice.dto.AccountDto;
 import me.jongwoo.userservice.service.AccountService;
 import me.jongwoo.userservice.vo.Greeting;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user-service")
@@ -30,6 +33,24 @@ public class AccountController {
     public AccountController(Environment env, AccountService accountService) {
         this.env = env;
         this.accountService = accountService;
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseAccount getUsers(@PathVariable String userId){
+        AccountDto accountDto = accountService.getAccountByAccountId(userId);
+
+        return modelMapper.map(accountDto, ResponseAccount.class);
+    }
+
+    @GetMapping("/users")
+    public List<ResponseAccount> getUsers(){
+        final List<Account> accountList = accountService.getAccountAll();
+        List<ResponseAccount> result = new ArrayList<>();
+        accountList.forEach(e -> {
+            final ResponseAccount resAccount = modelMapper.map(e, ResponseAccount.class);
+            result.add(resAccount);
+        });
+        return result;
     }
 
     @PostMapping("/users")

@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import me.jongwoo.userservice.domain.Account;
 import me.jongwoo.userservice.dto.AccountDto;
 import me.jongwoo.userservice.repository.AccountRepository;
+import me.jongwoo.userservice.vo.ResponseAccount;
+import me.jongwoo.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,4 +34,26 @@ public class AccountServiceImpl implements AccountService{
 
         return modelMapper.map(savedAccount, AccountDto.class);
     }
+
+    @Override
+    public AccountDto getAccountByAccountId(String accountId) {
+
+            final Account account = accountRepository.findByUserId(accountId);
+
+            if(account == null)
+                throw new UsernameNotFoundException("User not found");
+
+            final AccountDto accountDto = modelMapper.map(account, AccountDto.class);
+            List<ResponseOrder> orders = new ArrayList();
+
+            accountDto.setOrders(orders);
+
+        return accountDto;
+    }
+
+    @Override
+    public List<Account> getAccountAll() {
+        return accountRepository.findAll();
+    }
+
 }

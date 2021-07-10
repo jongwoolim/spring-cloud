@@ -1,8 +1,10 @@
 package me.jongwoo.userservice.dto;
 
 import lombok.Data;
+import me.jongwoo.userservice.vo.ResponseOrder;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class AccountDto {
@@ -14,4 +16,6 @@ public class AccountDto {
     private Date createdAt;
 
     private String encryptedPwd;
+
+    private List<ResponseOrder> orders;
 }
