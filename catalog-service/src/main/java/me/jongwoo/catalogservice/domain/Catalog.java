@@ -1,12 +1,17 @@
 package me.jongwoo.catalogservice.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "catalog")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Catalog {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
