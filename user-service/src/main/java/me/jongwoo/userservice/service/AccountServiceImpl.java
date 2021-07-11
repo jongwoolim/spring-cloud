@@ -7,6 +7,8 @@ import me.jongwoo.userservice.repository.AccountRepository;
 import me.jongwoo.userservice.vo.ResponseAccount;
 import me.jongwoo.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,23 @@ public class AccountServiceImpl implements AccountService{
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        final Account account = accountRepository.findByEmail(username);
+
+        if(account == null){
+            throw new UsernameNotFoundException(username);
+        }
+
+        return new User(account.getEmail(), account.getEncryptedPwd(),
+                true,
+                true,
+                true,
+                true,
+                new ArrayList<>());
+    }
 
     @Override
     public AccountDto createAccount(AccountDto accountDto) {
