@@ -2,8 +2,6 @@ package me.jongwoo.orderservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.jongwoo.catalogservice.domain.Catalog;
-import me.jongwoo.catalogservice.repository.CatalogRepository;
 import me.jongwoo.orderservice.domain.Order;
 import me.jongwoo.orderservice.dto.OrderDto;
 import me.jongwoo.orderservice.repository.OrderRepository;
@@ -23,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
 
-        orderDto.setUserId(UUID.randomUUID().toString());
+        orderDto.setOrderId(UUID.randomUUID().toString());
         orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice());
 
         final Order order = modelMapper.map(orderDto, Order.class);
