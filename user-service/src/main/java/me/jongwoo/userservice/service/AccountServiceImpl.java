@@ -75,4 +75,14 @@ public class AccountServiceImpl implements AccountService{
         return accountRepository.findAll();
     }
 
+    @Override
+    public AccountDto getAccountDetailsByEmail(String email) {
+        Account account = accountRepository.findByEmail(email);
+
+        if(account == null)
+            throw new UsernameNotFoundException(email);
+        final AccountDto accountDto = modelMapper.map(account, AccountDto.class);
+        return accountDto;
+    }
+
 }

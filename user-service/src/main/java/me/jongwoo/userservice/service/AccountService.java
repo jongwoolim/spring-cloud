@@ -12,4 +12,7 @@ public interface AccountService extends UserDetailsService {
 
     AccountDto getAccountByAccountId(String accountId);
     List<Account> getAccountAll();
+
+    AccountDto getAccountDetailsByEmail(String userName);
+
 }
