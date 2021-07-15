@@ -32,6 +32,11 @@ logging:
   level:
     me.jongwoo.userserivce: DEBUG
 
-token:
-  expiration_time: 86400000
-  secret: user_token
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans #refresh는 마이크로서비스에 있는 config 서버에서 가져와야할 부분을 refresh
+#token:
+#  expiration_time: 86400000
+#  secret: user_token
