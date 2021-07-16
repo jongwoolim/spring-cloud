@@ -3,15 +3,25 @@ server:
 spring:
   application:
     name: config-service
+  rabbitmq:
+    host: 127.0.0.1
+    prot: 5672
+    uesrname: guest
+    password: guest
   profiles:
     active: native
   cloud:
     config:
       server:
         native:
-          search-locations: file://${user.home}/native-file-repo
+          search-locations: file://${user.home}/spring-cloud-config/native-file-repo
         git:
-#          uri: file:///Users/limjongwoo/git-local-repo
+#          uri: file:///Users/limjongwoo/spring-cloud-config/git-local-repo
           uri: https://github.com/jongwoolim/spring-cloud-config
 #        uesrname: [your username] private일 경우
 #        password: [your password] private일 경우
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh

@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: user-service
+  rabbitmq:
+    host: 127.0.0.1
+    prot: 5672
+    uesrname: guest
+    password: guest
   h2:
     console:
       enabled: true
@@ -36,7 +41,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans #refresh는 마이크로서비스에 있는 config 서버에서 가져와야할 부분을 refresh
+        include: refresh, health, beans, busrefresh #refresh는 마이크로서비스에 있는 config 서버에서 가져와야할 부분을 refresh
 #token:
 #  expiration_time: 86400000
 #  secret: user_token
