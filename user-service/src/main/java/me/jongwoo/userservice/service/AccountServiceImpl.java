@@ -1,6 +1,7 @@
 package me.jongwoo.userservice.service;
 
 import lombok.RequiredArgsConstructor;
+import me.jongwoo.userservice.client.OrderServiceClient;
 import me.jongwoo.userservice.domain.Account;
 import me.jongwoo.userservice.dto.AccountDto;
 import me.jongwoo.userservice.repository.AccountRepository;
@@ -31,6 +32,7 @@ public class AccountServiceImpl implements AccountService{
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
     private final Environment env;
+    private final OrderServiceClient orderServiceClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -72,13 +74,17 @@ public class AccountServiceImpl implements AccountService{
 //        List<ResponseOrder> orders = new ArrayList();
 
         /* using as rest template*/
-        final String orderUrl = String.format(env.getProperty("order_service.url"), accountId);
-//        String orderUrl = "http://127.0.0.1:8000/order-service/%s/orders";
+//        final String orderUrl = String.format(env.getProperty("order_service.url"), accountId);
+////        String orderUrl = "http://127.0.0.1:8000/order-service/%s/orders";
+//
+//        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<ResponseOrder>>() {});
+//
+//        final List<ResponseOrder> ordersList = orderListResponse.getBody();
 
-        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<ResponseOrder>>() {});
+        /* using as feign client */
+        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
 
-        final List<ResponseOrder> ordersList = orderListResponse.getBody();
         accountDto.setOrders(ordersList);
 
         return accountDto;
