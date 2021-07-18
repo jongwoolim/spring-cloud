@@ -7,11 +7,16 @@ import me.jongwoo.userservice.repository.AccountRepository;
 import me.jongwoo.userservice.vo.ResponseAccount;
 import me.jongwoo.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +29,8 @@ public class AccountServiceImpl implements AccountService{
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final RestTemplate restTemplate;
+    private final Environment env;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -57,15 +63,23 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountDto getAccountByAccountId(String accountId) {
 
-            final Account account = accountRepository.findByUserId(accountId);
+        final Account account = accountRepository.findByUserId(accountId);
 
-            if(account == null)
-                throw new UsernameNotFoundException("User not found");
+        if(account == null)
+            throw new UsernameNotFoundException("User not found");
 
-            final AccountDto accountDto = modelMapper.map(account, AccountDto.class);
-            List<ResponseOrder> orders = new ArrayList();
+        final AccountDto accountDto = modelMapper.map(account, AccountDto.class);
+//        List<ResponseOrder> orders = new ArrayList();
 
-            accountDto.setOrders(orders);
+        /* using as rest template*/
+        final String orderUrl = String.format(env.getProperty("order_service.url"), accountId);
+//        String orderUrl = "http://127.0.0.1:8000/order-service/%s/orders";
+
+        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ResponseOrder>>() {});
+
+        final List<ResponseOrder> ordersList = orderListResponse.getBody();
+        accountDto.setOrders(ordersList);
 
         return accountDto;
     }
