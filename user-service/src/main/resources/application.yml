@@ -33,9 +33,10 @@ eureka:
 greeting:
   message: Welcome to the Simple E-commerce
 
+
 logging:
   level:
-    me.jongwoo.userserivce: DEBUG
+    me.jongwoo.userservice.client: DEBUG
 
 management:
   endpoints:
@@ -45,3 +46,4 @@ management:
 #token:
 #  expiration_time: 86400000
 #  secret: user_token
+

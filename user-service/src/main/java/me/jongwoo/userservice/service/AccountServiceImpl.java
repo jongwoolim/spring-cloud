@@ -1,6 +1,8 @@
 package me.jongwoo.userservice.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.jongwoo.userservice.client.OrderServiceClient;
 import me.jongwoo.userservice.domain.Account;
 import me.jongwoo.userservice.dto.AccountDto;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService{
@@ -83,7 +86,15 @@ public class AccountServiceImpl implements AccountService{
 //        final List<ResponseOrder> ordersList = orderListResponse.getBody();
 
         /* using as feign client */
-        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
+        /* Feign exception handling */
+        List<ResponseOrder> ordersList = null;
+        try{
+            ordersList = orderServiceClient.getOrders(accountId);
+        }catch (FeignException ex){
+            log.error(ex.getMessage());
+        }
+
+
 
         accountDto.setOrders(ordersList);
 
