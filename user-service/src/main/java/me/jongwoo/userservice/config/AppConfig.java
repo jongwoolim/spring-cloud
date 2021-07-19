@@ -1,6 +1,7 @@
 package me.jongwoo.userservice.config;
 
 import feign.Logger;
+import me.jongwoo.userservice.error.FeignErrorDecoder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
@@ -36,6 +37,11 @@ public class AppConfig {
     public Logger.Level feignLoggerLevel(){
         return Logger.Level.FULL;
     }
+
+//    @Bean
+//    public FeignErrorDecoder feignErrorDecoder(){
+//        return new FeignErrorDecoder();
+//    }
 
 
 }

@@ -87,14 +87,15 @@ public class AccountServiceImpl implements AccountService{
 
         /* using as feign client */
         /* Feign exception handling */
-        List<ResponseOrder> ordersList = null;
-        try{
-            ordersList = orderServiceClient.getOrders(accountId);
-        }catch (FeignException ex){
-            log.error(ex.getMessage());
-        }
+//        List<ResponseOrder> ordersList = null;
+//        try{
+//            ordersList = orderServiceClient.getOrders(accountId);
+//        }catch (FeignException ex){
+//            log.error(ex.getMessage());
+//        }
 
-
+        /* ErrorDecoder */
+        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
 
         accountDto.setOrders(ordersList);
 
