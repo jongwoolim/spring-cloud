@@ -3,6 +3,7 @@ package me.jongwoo.orderservice.controller;
 import lombok.RequiredArgsConstructor;
 import me.jongwoo.orderservice.domain.Order;
 import me.jongwoo.orderservice.dto.OrderDto;
+import me.jongwoo.orderservice.messagequeue.KafkaProducer;
 import me.jongwoo.orderservice.service.OrderService;
 import me.jongwoo.orderservice.vo.ResponseOrder;
 import me.jongwoo.orderservice.vo.ResquestOrder;
@@ -23,6 +24,7 @@ public class OrderController {
     private final Environment env;
     private final OrderService orderService;
     private final ModelMapper modelMapper;
+    private final KafkaProducer kafkaProducer;
 
     @GetMapping("/health_check")
     public String status(){
@@ -33,13 +35,16 @@ public class OrderController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@PathVariable String userId, @RequestBody ResquestOrder order){
 
-
+        /* jpa */
         final OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         orderDto.setUserId(userId);
 
         final OrderDto createdOrder = orderService.createOrder(orderDto);
+
         ResponseOrder responseOrder = modelMapper.map(createdOrder, ResponseOrder.class);
 
+        /* send this order to the kafka */
+        kafkaProducer.send("example-catalog-topic", orderDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
