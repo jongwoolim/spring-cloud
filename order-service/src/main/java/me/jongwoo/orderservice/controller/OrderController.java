@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.jongwoo.orderservice.domain.Order;
 import me.jongwoo.orderservice.dto.OrderDto;
 import me.jongwoo.orderservice.messagequeue.KafkaProducer;
+import me.jongwoo.orderservice.messagequeue.OrderProducer;
 import me.jongwoo.orderservice.service.OrderService;
 import me.jongwoo.orderservice.vo.ResponseOrder;
 import me.jongwoo.orderservice.vo.ResquestOrder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/order-service")
@@ -25,6 +27,7 @@ public class OrderController {
     private final OrderService orderService;
     private final ModelMapper modelMapper;
     private final KafkaProducer kafkaProducer;
+    private final OrderProducer orderProducer;
 
     @GetMapping("/health_check")
     public String status(){
@@ -39,12 +42,19 @@ public class OrderController {
         final OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         orderDto.setUserId(userId);
 
-        final OrderDto createdOrder = orderService.createOrder(orderDto);
+        /* jpa */
+//        final OrderDto createdOrder = orderService.createOrder(orderDto);
+//        ResponseOrder responseOrder = modelMapper.map(createdOrder, ResponseOrder.class);
+        /* kafka */
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(order.getQty() * order.getUnitPrice());
 
-        ResponseOrder responseOrder = modelMapper.map(createdOrder, ResponseOrder.class);
 
         /* send this order to the kafka */
         kafkaProducer.send("example-catalog-topic", orderDto);
+        orderProducer.send("orders", orderDto);
+
+        ResponseOrder responseOrder = modelMapper.map(orderDto, ResponseOrder.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
