@@ -35,12 +35,12 @@ public class OrderProducer {
 
     public OrderDto send(String topic, OrderDto orderDto){
         Payload payload = Payload.builder()
-                .orderId(orderDto.getOrderId())
-                .userId(orderDto.getUserId())
-                .productId(orderDto.getProductId())
+                .order_id(orderDto.getOrderId())
+                .user_id(orderDto.getUserId())
+                .product_id(orderDto.getProductId())
                 .qty(orderDto.getQty())
-                .unitPrice(orderDto.getUnitPrice())
-                .totalPrice(orderDto.getTotalPrice())
+                .unit_price(orderDto.getUnitPrice())
+                .total_price(orderDto.getTotalPrice())
                 .build();
         KafkaOrderDto kafkaOrderDto = new KafkaOrderDto(schema, payload);
 
