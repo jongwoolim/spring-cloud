@@ -10,6 +10,8 @@ import me.jongwoo.userservice.repository.AccountRepository;
 import me.jongwoo.userservice.vo.ResponseAccount;
 import me.jongwoo.userservice.vo.ResponseOrder;
 import org.modelmapper.ModelMapper;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -36,6 +38,7 @@ public class AccountServiceImpl implements AccountService{
     private final RestTemplate restTemplate;
     private final Environment env;
     private final OrderServiceClient orderServiceClient;
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -95,7 +98,11 @@ public class AccountServiceImpl implements AccountService{
 //        }
 
         /* ErrorDecoder */
-        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
+//        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+        List<ResponseOrder> ordersList = circuitBreaker.run(() -> orderServiceClient.getOrders(accountId)
+                , throwable -> new ArrayList<>());
 
         accountDto.setOrders(ordersList);
 
