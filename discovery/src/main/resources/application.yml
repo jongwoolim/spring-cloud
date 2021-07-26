@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: discoveryservice
+#유레카 서버에서 config service 정보를 사용할 일이 있으면 명시해주면 된다
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888
+      name: ecommerce
+
 
 eureka:
   client:
