@@ -1,6 +1,7 @@
 encrypt:
 #  key: abcdefghijklmnopqrstuvwxyz0123456789
   key-store:
-    location: file://${user.home}/spring-cloud/keystore/apiEncryptionKey.jks
+#    location: file://${user.home}/spring-cloud/keystore/apiEncryptionKey.jks
+    location: file:/apiEncryptionKey.jks #컨테이너 내부에 있는 파일 경로
     password: test1234
     alias: apiEncryptionKey
