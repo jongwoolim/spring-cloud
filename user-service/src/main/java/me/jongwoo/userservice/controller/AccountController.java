@@ -1,5 +1,6 @@
 package me.jongwoo.userservice.controller;
 
+import io.micrometer.core.annotation.Timed;
 import me.jongwoo.userservice.domain.Account;
 import me.jongwoo.userservice.dto.AccountDto;
 import me.jongwoo.userservice.service.AccountService;
@@ -65,6 +66,7 @@ public class AccountController {
 
 
     @GetMapping("/health_check")
+    @Timed(value = "users.status", longTask = true)
     public String status(){
 //        return String.format("It`s Working in User Service POrT %s", env.getProperty("local.server.port"));
         return String.format("It`s Working in User Service"
@@ -81,6 +83,7 @@ public class AccountController {
 //    }
 
     @GetMapping("/welcome")
+    @Timed(value = "users.welcome", longTask = true)
     public String welcome(){
         return greeting.getMessage();
     }

@@ -98,6 +98,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace, busrefresh #httptrace를 사용하기 위해서는 빈 등록이 필요함
+        include: refresh, health, beans, httptrace, busrefresh, info, metrics, prometheus #httptrace를 사용하기 위해서는 빈 등록이 필요함
 #token:
 #  secret: user_token

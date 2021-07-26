@@ -49,7 +49,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, busrefresh #refresh는 마이크로서비스에 있는 config 서버에서 가져와야할 부분을 refresh
+        #refresh는 마이크로서비스에 있는 config 서버에서 가져와야할 부분을 refresh
+        include: refresh, health, beans, busrefresh, info, metrics, prometheus
+
 #token:
 #  expiration_time: 86400000
 #  secret: user_token
