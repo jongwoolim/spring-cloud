@@ -1,6 +1,7 @@
 package me.jongwoo.orderservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.jongwoo.orderservice.domain.Order;
 import me.jongwoo.orderservice.dto.OrderDto;
 import me.jongwoo.orderservice.messagequeue.KafkaProducer;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/order-service")
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class OrderController {
     // http:127.0.0.1:0/order-service/{user_id}/orders
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@PathVariable String userId, @RequestBody ResquestOrder order){
-
+        log.info("Before add orders data");
         /* jpa */
         final OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         orderDto.setUserId(userId);
@@ -56,18 +58,28 @@ public class OrderController {
 //        orderProducer.send("orders", orderDto);
 
 //        ResponseOrder responseOrder = modelMapper.map(orderDto, ResponseOrder.class);
+        log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
     @GetMapping("/{userId}/orders")
-    public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable String userId){
-
+    public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable String userId) throws Exception {
+        log.info("Before retrieve orders data");
         final List<Order> orderList = orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
         orderList.forEach(e -> {
             result.add(modelMapper.map(e, ResponseOrder.class));
         });
+
+        try{
+            Thread.sleep(1000);
+            throw new Exception("장애 발생");
+        }catch (InterruptedException ex){
+            log.error(ex.getMessage());
+        }
+        log.info("Add retrieved orders data");
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
