@@ -100,12 +100,13 @@ public class AccountServiceImpl implements AccountService{
         /* ErrorDecoder */
 //        List<ResponseOrder> ordersList = orderServiceClient.getOrders(accountId);
 
+        log.info("Before call orders microservice");
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
         List<ResponseOrder> ordersList = circuitBreaker.run(() -> orderServiceClient.getOrders(accountId)
                 , throwable -> new ArrayList<>());
+        log.info("After call orders microservice");
 
         accountDto.setOrders(ordersList);
-
         return accountDto;
     }
 
