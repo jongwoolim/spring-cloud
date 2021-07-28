@@ -54,7 +54,7 @@ public class OrderController {
 
 
         /* send this order to the kafka */
-//        kafkaProducer.send("example-catalog-topic", orderDto);
+        kafkaProducer.send("example-catalog-topic", orderDto);
 //        orderProducer.send("orders", orderDto);
 
 //        ResponseOrder responseOrder = modelMapper.map(orderDto, ResponseOrder.class);
@@ -68,16 +68,15 @@ public class OrderController {
         final List<Order> orderList = orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
-        orderList.forEach(e -> {
-            result.add(modelMapper.map(e, ResponseOrder.class));
-        });
+        orderList.forEach(e ->
+            result.add(modelMapper.map(e, ResponseOrder.class)));
 
-        try{
-            Thread.sleep(1000);
-            throw new Exception("장애 발생");
-        }catch (InterruptedException ex){
-            log.error(ex.getMessage());
-        }
+//        try{
+//            Thread.sleep(1000);
+//            throw new Exception("장애 발생");
+//        }catch (InterruptedException ex){
+//            log.error(ex.getMessage());
+//        }
         log.info("Add retrieved orders data");
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
